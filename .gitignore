@@ -21,6 +21,7 @@ media/
 staticfiles/
 static/
 media/uploads/
+uploads/
 
 # IDE
 .idea/

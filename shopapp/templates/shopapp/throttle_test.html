@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}Тест ограничения запросов{% endblock %}
+
+{% block content %}
+<h1>Тест Throttling Middleware</h1>
+
+<p>Это страница для проверки ограничения частоты запросов.</p>
+
+<div class="info">
+    <h3>Настройки ограничений:</h3>
+    <ul>
+        <li>Максимум запросов: <strong>10</strong></li>
+        <li>Временное окно: <strong>60 секунд</strong></li>
+    </ul>
+
+    <p>Попробуйте быстро обновить эту страницу много раз (F5).
+    После 10 запросов за 60 секунд вы увидите ошибку 429.</p>
+</div>
+
+<div class="counter">
+    <p>Вы посетили эту страницу: <strong>{{ request.session.test_counter|default:0 }}</strong> раз</p>
+</div>
+
+<script>
+    // Простой счетчик для демонстрации
+    let counter = localStorage.getItem('reloadCounter') || 0;
+    counter++;
+    localStorage.setItem('reloadCounter', counter);
+    document.write('<p>Обновлений страницы: <strong>' + counter + '</strong></p>');
+</script>
+
+<p><a href="{% url 'shopapp:shop_index' %}">← На главную</a></p>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<h1>{{ title }}</h1>
+
+<div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+    <form method="post">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div style="background: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 20px;">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        {% for field in form %}
+            <div style="margin-bottom: 15px;">
+                <label for="{{ field.id_for_label }}" style="display: block; font-weight: bold; margin-bottom: 5px;">
+                    {{ field.label }}
+                    {% if field.field.required %}
+                        <span style="color: red;">*</span>
+                    {% endif %}
+                </label>
+
+                {{ field }}
+
+                {% if field.help_text %}
+                    <small style="color: #666; display: block; margin-top: 5px;">{{ field.help_text }}</small>
+                {% endif %}
+
+                {% if field.errors %}
+                    <div style="color: red; margin-top: 5px;">
+                        {% for error in field.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        <div style="margin-top: 20px;">
+            <button type="submit" class="btn" style="background-color: #4caf50;">{{ button_text }}</button>
+            <a href="{% url 'shopapp:orders_list' %}" class="btn" style="background-color: #666;">Отмена</a>
+        </div>
+    </form>
+</div>
+
+<p><a href="{% url 'shopapp:orders_list' %}">← Назад к списку заказов</a></p>
+{% endblock %}

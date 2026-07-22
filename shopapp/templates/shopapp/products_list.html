@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <h1>{{ title|capfirst }}</h1>
+
+    {% if products %}
+        <p>Всего товаров: {{ total_products }}</p>
+        <table border="1" cellpadding="10" style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Название</th>
+                    <th>Описание</th>
+                    <th>Цена</th>
+                    <th>Скидка</th>
+                    <th>Количество</th>
+                    <th>Активен</th>
+                    <th>Архивирован</th>
+                    <th>Дата создания</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                    <tr {% if product.stock == 0 %}style="background-color: #ffe0e0;"{% endif %}>
+                        <td>{{ product.id }}</td>
+                        <td>{{ product.name|truncatechars:30 }}</td>
+                        <td>{{ product.description|default:"—"|truncatewords:10 }}</td>
+                        <td>{{ product.price|floatformat:2 }} ₽</td>
+                        <td>
+                            {% if product.discount > 0 %}
+                                {{ product.discount }}%
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                        <td>{{ product.stock }}</td>
+                        <td>
+                            {% if product.is_active %}
+                                <span style="color: green;">✅ Да</span>
+                            {% else %}
+                                <span style="color: red;">❌ Нет</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if product.is_archived %}
+                                <span style="color: orange;">📦 Архив</span>
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                        <td>{{ product.created_at|date:"d.m.Y" }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <p><strong>Итого:</strong> {{ products|length }} товаров</p>
+    {% else %}
+        <p>Товары отсутствуют.</p>
+    {% endif %}
+
+    <p><a href="{% url 'shopapp:shop_index' %}">← На главную</a></p>
+{% endblock %}

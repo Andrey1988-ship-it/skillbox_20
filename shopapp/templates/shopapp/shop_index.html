@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block title %}Мой магазин{% endblock %}
+
+{% block content %}
+<!-- Приветственный блок -->
+<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px; border-radius: 10px; text-align: center; margin-bottom: 30px;">
+    <h1 style="color: white; margin-bottom: 10px;">🏪 Добро пожаловать в магазин брелоков!</h1>
+    <p style="font-size: 1.2rem;">У нас вы найдете уникальные брелоки на любой вкус</p>
+</div>
+
+<!-- Блок действий (что можно сделать) -->
+<h2>📋 Что вы можете сделать:</h2>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 40px;">
+    <div style="border: 1px solid #ddd; border-radius: 10px; padding: 20px; text-align: center; background: #f9f9f9; transition: transform 0.3s;">
+        <div style="font-size: 48px;">🛍️</div>
+        <h3>Посмотреть товары</h3>
+        <p>Просматривайте каталог, выбирайте понравившиеся брелоки</p>
+        <a href="{% url 'shopapp:products_list' %}" class="btn" style="margin-top: 10px;">Перейти к товарам →</a>
+    </div>
+
+    <div style="border: 1px solid #ddd; border-radius: 10px; padding: 20px; text-align: center; background: #f9f9f9; transition: transform 0.3s;">
+        <div style="font-size: 48px;">📤</div>
+        <h3>Загрузить файл</h3>
+        <p>Загрузите изображение для товара (размер до 1 МБ)</p>
+        <a href="{% url 'shopapp:upload_file' %}" class="btn" style="margin-top: 10px; background-color: #4caf50;">Загрузить файл →</a>
+    </div>
+
+    <div style="border: 1px solid #ddd; border-radius: 10px; padding: 20px; text-align: center; background: #f9f9f9; transition: transform 0.3s;">
+        <div style="font-size: 48px;">📦</div>
+        <h3>Мои заказы</h3>
+        <p>Просмотр и отслеживание ваших заказов</p>
+        <a href="{% url 'shopapp:orders_list' %}" class="btn" style="margin-top: 10px;">Мои заказы →</a>
+    </div>
+
+    {% if user.is_authenticated %}
+    <div style="border: 1px solid #ddd; border-radius: 10px; padding: 20px; text-align: center; background: #e8f5e9;">
+        <div style="font-size: 48px;">🔧</div>
+        <h3>Управление</h3>
+        <p>Вы вошли как администратор</p>
+        <a href="/admin/" class="btn" style="margin-top: 10px; background-color: #3498db;">Админ-панель →</a>
+    </div>
+    {% else %}
+    <div style="border: 1px solid #ddd; border-radius: 10px; padding: 20px; text-align: center; background: #fff3e0;">
+        <div style="font-size: 48px;">🔐</div>
+        <h3>Войти в систему</h3>
+        <p>Для оформления заказа и загрузки файлов</p>
+        <a href="/admin/login/" class="btn" style="margin-top: 10px; background-color: #ff9800;">Войти →</a>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Список товаров -->
+<h2>🛍️ Наши товары ({{ products|length }} шт.)</h2>
+
+{% if products %}
+    <div class="products-grid">
+        {% for product in products|slice:":6" %}
+            <div class="product-card">
+                <div class="product-title">{{ product.name|capfirst|truncatechars:35 }}</div>
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 100%; height: 150px; object-fit: cover; border-radius: 5px; margin: 10px 0;">
+                {% else %}
+                    <div style="height: 150px; background: #f0f0f0; display: flex; align-items: center; justify-content: center; border-radius: 5px; margin: 10px 0;">
+                        🖼️ Нет фото
+                    </div>
+                {% endif %}
+                <div class="product-price">{{ product.price|floatformat:2 }} ₽</div>
+                <p>В наличии: {{ product.stock }} шт.</p>
+                <a href="{% url 'shopapp:product_detail' product.id %}" class="btn" style="font-size: 0.9rem;">Подробнее</a>
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if products|length > 6 %}
+        <p style="text-align: center; margin-top: 20px;">
+            <a href="{% url 'shopapp:products_list' %}" style="color: #e44d26; font-weight: bold;">Смотреть все {{ products|length }} товаров →</a>
+        </p>
+    {% endif %}
+{% else %}
+    <p style="text-align: center; color: #666;">В магазине пока нет товаров.</p>
+    {% if user.is_authenticated %}
+        <p style="text-align: center;"><a href="/admin/shopapp/product/add/" class="btn">➕ Добавить первый товар</a></p>
+    {% endif %}
+{% endif %}
+
+<!-- Статистика -->
+<div style="margin-top: 40px; padding: 20px; background-color: #f0f0f0; border-radius: 10px; text-align: center;">
+    <h3>📊 Статистика магазина</h3>
+    <div style="display: flex; justify-content: space-around; flex-wrap: wrap;">
+        <div>
+            <span style="font-size: 2rem; font-weight: bold; color: #e44d26;">{{ products|length }}</span>
+            <p>Товаров</p>
+        </div>
+        <div>
+            <span style="font-size: 2rem; font-weight: bold; color: #e44d26;">12</span>
+            <p>Категорий</p>
+        </div>
+        <div>
+            <span style="font-size: 2rem; font-weight: bold; color: #e44d26;">150+</span>
+            <p>Клиентов</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

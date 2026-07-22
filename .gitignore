@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+venv/
+env/
+.venv/
+ENV/
+
+# Django
+*.log
+db.sqlite3
+media/
+staticfiles/
+static/
+media/uploads/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Env files
+.env
+.env.local
+
+# Docker
+*.pid

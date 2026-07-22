@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Вход в систему{% endblock %}
+
+{% block content %}
+<h1>🔐 Вход в систему</h1>
+
+<div style="max-width: 400px; margin: 0 auto; background: #f9f9f9; padding: 20px; border-radius: 8px;">
+    <form method="post">
+        {% csrf_token %}
+
+        {% if form.errors %}
+            <div style="background: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 20px;">
+                Неверное имя пользователя или пароль
+            </div>
+        {% endif %}
+
+        <div style="margin-bottom: 15px;">
+            <label for="id_username">Имя пользователя:</label>
+            <input type="text" name="username" id="id_username" class="form-control" required>
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label for="id_password">Пароль:</label>
+            <input type="password" name="password" id="id_password" class="form-control" required>
+        </div>
+
+        <button type="submit" class="btn" style="background-color: #4caf50;">Войти</button>
+    </form>
+</div>
+
+<p style="margin-top: 20px; text-align: center;">
+    Нет аккаунта? <a href="/admin/login/">Войти через админку</a>
+</p>
+{% endblock %}

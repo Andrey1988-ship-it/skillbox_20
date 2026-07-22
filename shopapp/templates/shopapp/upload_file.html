@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Загрузка файлов{% endblock %}
+
+{% block content %}
+<h1>Загрузка файлов</h1>
+
+<div class="upload-form">
+    <p><strong>Ограничения:</strong></p>
+    <ul>
+        <li>Максимальный размер файла: <strong>1 МБ</strong></li>
+        <li>Разрешенные типы: JPG, PNG, GIF, PDF, TXT</li>
+    </ul>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn">Загрузить файл</button>
+    </form>
+</div>
+
+{% if recent_files %}
+<h2>Последние загруженные файлы</h2>
+<table class="cart-table">
+    <thead>
+        <tr>
+            <th>Файл</th>
+            <th>Размер</th>
+            <th>Тип</th>
+            <th>Дата загрузки</th>
+            <th>Загрузил</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for file in recent_files %}
+        <tr>
+            <td>{{ file.file.name|truncatechars:50 }}</td>
+            <td>{{ file.file_size|filesizeformat }}</td>
+            <td>{{ file.content_type }}</td>
+            <td>{{ file.uploaded_at|date:"d.m.Y H:i" }}</td>
+            <td>{{ file.uploaded_by|default:"Гость" }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+
+<p><a href="{% url 'shopapp:shop_index' %}">← На главную</a></p>
+{% endblock %}

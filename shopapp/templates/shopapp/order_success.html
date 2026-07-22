@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block title %}Заказ оформлен{% endblock %}
+
+{% block content %}
+<h1>Спасибо за заказ!</h1>
+<p>Номер вашего заказа: #{{ order.id }}</p>
+<p>Статус: {{ order.get_status_display }}</p>
+<a href="{% url 'shopapp:shop_index' %}">На главную</a>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <h1>{{ title|capfirst }}</h1>
+
+    {% if orders %}
+        <p>Всего заказов: <strong>{{ orders|length }}</strong></p>
+
+        {% for order in orders %}
+            <div style="border: 1px solid #ccc; margin: 20px 0; padding: 15px; border-radius: 5px; background-color: #f9f9f9;">
+                <h3>Заказ #{{ order.id }}</h3>
+                <p><strong>Пользователь:</strong> {{ order.user.username|default:"Гость" }} ({{ order.user.email|default:"email не указан" }})</p>
+                <p><strong>Имя:</strong> {{ order.first_name|capfirst }} {{ order.last_name|capfirst }}</p>
+                <p><strong>Телефон:</strong> {{ order.phone }}</p>
+                <p><strong>Email:</strong> {{ order.email }}</p>
+                <p><strong>Адрес:</strong> {{ order.address }}</p>
+                <p><strong>Комментарий:</strong> {{ order.comment|default:"—"|truncatechars:100 }}</p>
+                <p><strong>Статус:</strong>
+                    <span style="
+                        {% if order.status == 'new' %}color: blue;font-weight: bold;
+                        {% elif order.status == 'processing' %}color: orange;font-weight: bold;
+                        {% elif order.status == 'paid' %}color: purple;font-weight: bold;
+                        {% elif order.status == 'completed' %}color: green;font-weight: bold;
+                        {% elif order.status == 'cancelled' %}color: red;font-weight: bold;
+                        {% endif %}
+                    ">
+                        {{ order.get_status_display }}
+                    </span>
+                </p>
+                <p><strong>Дата создания:</strong> {{ order.created_at|date:"d.m.Y H:i" }}</p>
+                <p><strong>Дата обновления:</strong> {{ order.updated_at|date:"d.m.Y H:i" }}</p>
+
+                <h4>Товары в заказе:</h4>
+                {% with items=order.items.all %}
+                    {% if items %}
+                        <ul>
+                            {% for item in items %}
+                                <li>
+                                    <strong>{{ item.product.name|capfirst }}</strong><br>
+                                    Цена: {{ item.price|floatformat:2 }} ₽<br>
+                                    Количество: {{ item.quantity }} шт.<br>
+                                    Стоимость: <strong>{{ item.get_cost|floatformat:2 }} ₽</strong>
+                                    {% if item.product.discount > 0 %}
+                                        <span style="color: green;">(скидка: {{ item.product.discount }}%)</span>
+                                    {% endif %}
+                                </li>
+                                {% if not forloop.last %}<br>{% endif %}
+                            {% endfor %}
+                        </ul>
+                        <p style="font-size: 1.2rem; margin-top: 10px;">
+                            <strong>Общая сумма заказа:</strong>
+                            <span style="color: #e44d26; font-size: 1.3rem;">{{ order.get_total_price|floatformat:2 }} ₽</span>
+                        </p>
+                    {% else %}
+                        <p><em>Нет товаров в заказе</em></p>
+                    {% endif %}
+                {% endwith %}
+            </div>
+        {% endfor %}
+
+        <p><strong>Всего заказов:</strong> {{ orders|length }}</p>
+    {% else %}
+        <p>Заказов пока нет.</p>
+    {% endif %}
+
+    <p><a href="{% url 'shopapp:shop_index' %}">← На главную</a></p>
+{% endblock %}
